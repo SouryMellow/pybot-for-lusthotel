@@ -1,14 +1,18 @@
 {
     "id": [
-        624819577427197994
+        624819577427197994,
+        646823465101295627
     ],
     "usuario": [
-        "sourmellow"
+        "sourmellow",
+        "Lust Hotel Bot"
     ],
     "avisos": [
-        1
+        6,
+        2
     ],
     "ultima_razon": [
-        "acosadora"
+        "mal comportamiento",
+        "mal comportamiento"
     ]
 }

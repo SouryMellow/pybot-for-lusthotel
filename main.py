@@ -1,11 +1,7 @@
 import os
 import discord
 import random
-
-import csv
-import operator
 import json
-import pandas as pd
 
 from Verified import *
 from Warn import *
@@ -48,7 +44,7 @@ async def ban(ctx, *users: discord.User):
 # custom functions
 #
 @bot.command(name='verify', help='Verifica a un usuario. (SOLO VERIFICADOR).')
-@commands.bot_has_role('Verificador')
+@commands.has_any_role('Verificador')
 async def verify(ctx, user: discord.User, gender, country):
     for v in Verified.verifieds:
         if v.id == user.id:
@@ -66,7 +62,8 @@ async def verify(ctx, user: discord.User, gender, country):
 async def warn(ctx, user: discord.User, message="mal comportamiento"):
     for w in Warn.peopleWarned:
         if w.id == user.id:
-            w.setWarns(w.warns + 1)
+            x = w.warns + 1
+            w.setWarn(x)
             await ctx.send(f'Has recibido {w.warns} advertencias {user.mention} por {message}.')
             return
 
@@ -189,7 +186,8 @@ async def md(ctx):
 @bot.command(name='dm')
 async def md(ctx):
     await ctx.send('DM = Direct Message.')
-    
+
+
 @bot.command(name='info')
 async def info(ctx):
     await ctx.send('Want to help me? : https://github.com/SouryMellow/pybot-for-lusthotel')
@@ -203,24 +201,22 @@ async def save(ctx):
     listVerifieds = Verified.verifieds
     listWarns = Warn.peopleWarned
 
-    data = {'id': [i.id for i in listVerifieds],
-            'usuario': [i.user for i in listVerifieds],
-            'genero': [i.gender for i in listVerifieds],
-            'country': [i.country for i in listVerifieds]}
+    a = {'id': [i.id for i in listVerifieds],
+         'usuario': [i.user for i in listVerifieds],
+         'genero': [i.gender for i in listVerifieds],
+         'country': [i.country for i in listVerifieds]}
     f = open('files/people_verified.json', 'w')
-    f.write(str(data).replace("'", '"'))
+    f.write(str(a).replace("'", '"'))
     f.close()
 
-    data = {'id': [i.id for i in listWarns],
-            'usuario': [i.user for i in listWarns],
-            'avisos': [i.warns for i in listWarns],
-            'ultima_razon': [i.message for i in listWarns]}
+    b = {'id': [i.id for i in listWarns],
+         'usuario': [i.user for i in listWarns],
+         'avisos': [i.warns for i in listWarns],
+         'ultima_razon': [i.message for i in listWarns]}
     f = open('files/people_warned.json', 'w')
-    f.write(str(data).replace("'", '"'))
+    f.write(str(b).replace("'", '"'))
     f.close()
 
-    #df = pd.DataFrame(data, columns=['id', 'usuario', 'genero', 'country'])
-    # df.to_csv('verified.csv')
     await ctx.send("Se ha guardado la informacion correctamente.")
 
 #
@@ -252,11 +248,6 @@ async def mul(ctx, *nums: float):
     await ctx.send(z)
 
 
-@bot.on_message
-async def on_message():
-    print("estoy vigilando...")
-
-
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -272,22 +263,22 @@ async def on_ready():
         verifieds = json.load(file)
         print("Leyendo archivo people_verified.json")
         for i in range(len(verifieds['id'])):
-            v = Verified(verifieds['id'][i],
+            a = Verified(verifieds['id'][i],
                          verifieds['usuario'][i],
                          verifieds['genero'][i],
                          verifieds['country'][i])
-            Verified.verifieds.append(v)
+            Verified.verifieds.append(a)
         file.close()
     print("Terminado...")
     with open('files/people_warned.json') as file:
-        verifieds = json.load(file)
+        warned = json.load(file)
         print("Leyendo archivo people_warned.json")
-        for i in range(len(verifieds['id'])):
-            v = Verified(verifieds['id'][i],
-                         verifieds['usuario'][i],
-                         verifieds['avisos'][i],
-                         verifieds['ultima_razon'][i])
-            Verified.verifieds.append(v)
+        for i in range(len(warned['id'])):
+            b = Warn(warned['id'][i],
+                     warned['usuario'][i],
+                     warned['avisos'][i],
+                     warned['ultima_razon'][i])
+            Warn.peopleWarned.append(b)
         file.close()
     print("Terminado...")
     print(f'{bot.user.name} estoy en funcionamiento.')
