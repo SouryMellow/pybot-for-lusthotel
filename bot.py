@@ -189,6 +189,10 @@ async def md(ctx):
 @bot.command(name='dm')
 async def md(ctx):
     await ctx.send('DM = Direct Message.')
+    
+@bot.command(name='info')
+async def info(ctx):
+    await ctx.send('Want to help me? : https://github.com/SouryMellow/pybot-for-lusthotel')
 
 #
 # save
