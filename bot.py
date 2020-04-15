@@ -17,9 +17,38 @@ from dotenv import load_dotenv
 load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
 
+#
+# server
+#
 
-@bot.command(name='verify', help='Verifica a un usuario. (SOLO MODERADOR). e:[!lh verify @{user} {sexo} {pais}]')
-@commands.has_role('Moderador')
+#
+# admin functions
+#
+@bot.command(name='kick', help='Expulsa a uno o mas usuarios del servidor')
+@commands.has_any_role('Moderador', 'Soporte')
+async def ban(ctx, *users: discord.User):
+    for u in users:
+        await ctx.guild.kick(u)
+
+
+@bot.command(name='ban', help='Banea a uno o mas usuarios del servidor')
+@commands.has_any_role('Moderador', 'Soporte')
+async def ban(ctx, *users: discord.User):
+    for u in users:
+        await ctx.guild.ban(u)
+
+
+@bot.command(name='unban', help='Desbanea a uno o mas usuarios del servidor')
+@commands.has_any_role('Moderador', 'Soporte')
+async def ban(ctx, *users: discord.User):
+    for u in users:
+        await ctx.guild.unban(u)
+
+#
+# custom functions
+#
+@bot.command(name='verify', help='Verifica a un usuario. (SOLO VERIFICADOR).')
+@commands.bot_has_role('Verificador')
 async def verify(ctx, user: discord.User, gender, country):
     for v in Verified.verifieds:
         if v.id == user.id:
@@ -32,8 +61,8 @@ async def verify(ctx, user: discord.User, gender, country):
     await ctx.send(f'```{p.user} verificado correctamente.```')
 
 
-@bot.command(name='warn', help='Pon una advertencia a una persona. (SOLO MODERADOR). e:[!lh warn @{user} *{message (No necesario)}]')
-@commands.has_role('Moderador')
+@bot.command(name='warn', help='Pon una advertencia a una persona. (SOLO MODERADOR).')
+@commands.has_any_role('Moderador', 'Soporte')
 async def warn(ctx, user: discord.User, message="mal comportamiento"):
     for w in Warn.peopleWarned:
         if w.id == user.id:
@@ -46,22 +75,33 @@ async def warn(ctx, user: discord.User, message="mal comportamiento"):
     await ctx.send(f'Has recibido una advertencia {user.mention} por {message}.')
 
 
-@bot.command(name='request', help='Despliega la informacion de una o varias personas. e:[!lh request @{*user,..., users}]')
-@commands.has_role('Moderador')
-async def request(ctx, *users: discord.User):
+@bot.command(name='request', help='Despliega la informacion de una o varias personas.')
+@commands.has_any_role('Moderador', 'Soporte')
+async def request(ctx, *users: discord.Member):
     for user in users:
-        await ctx.send(f'```{user.profile}```')
+        r = [u.name for u in user.roles]
+        await ctx.send(f'```Name: {user.name}\n' +
+                       f'Nick: {user.nick}\n' +
+                       f'Avatar: ```{user.avatar_url}\n' +
+                       f'```ID: {user.id}\n' +
+                       f'Se creo el perfil: {user.created_at}\n' +
+                       f'Se unio al server: {user.joined_at}\n' +
+                       f'Status: {user.premium_since}\n' +
+                       f'Roles: {r}\n' +
+                       f'Actividad: {user.activity}\n' +
+                       f'Top rol: {user.top_role}'
+                       '```')
 
 
-@bot.command(name='id', help='Obten la ID de una o varias personas. e:[!lh id @{*user,..., users}]')
-@commands.has_role('Moderador')
+@bot.command(name='id', help='Obten la ID de una o varias personas.')
+@commands.has_any_role('Moderador', 'Soporte')
 async def getid(ctx, *users: discord.User):
     for user in users:
         await ctx.send(f'```ID: {user.id}```')
 
 
-@bot.command(name='listv', help='Despliega toda la informacion guardada de las personas verificadas. (SOLO MODERADOR). e:[!lh listv]')
-@commands.has_role('Moderador')
+@bot.command(name='listv', help='Despliega toda la informacion guardada de las personas verificadas. (SOLO MODERADOR).')
+@commands.has_any_role('Moderador', 'Soporte')
 async def listVerify(ctx):
     for v in Verified.verifieds:
         await ctx.send(f'```ID: {v.id}\n' +
@@ -70,8 +110,8 @@ async def listVerify(ctx):
                        f'Pais: {v.country}\n```')
 
 
-@bot.command(name='warns', help='Ver todas las advertencias de una o varias personas. e:[!lh warns @{*user,..., users}]')
-@commands.has_role('Moderador')
+@bot.command(name='warns', help='Ver todas las advertencias de una o varias personas.')
+@commands.has_any_role('Moderador', 'Soporte')
 async def warns(ctx, *users: discord.User):
     for u in users:
         for w in Warn.peopleWarned:
@@ -83,8 +123,8 @@ async def warns(ctx, *users: discord.User):
                 pass
 
 
-@bot.command(name='listw', help='Ver todas las advertencias de todas las personas. e:[!lh listw]')
-@commands.has_role('Moderador')
+@bot.command(name='listw', help='Ver todas las advertencias de todas las personas.')
+@commands.has_any_role('Moderador', 'Soporte')
 async def listWarns(ctx):
     for w in Warn.peopleWarned:
         await ctx.send(f'```Usuario: {w.user}\n' +
@@ -93,19 +133,68 @@ async def listWarns(ctx):
 
 
 @bot.command(name='underage')
-@commands.has_role('Moderador')
+@commands.has_any_role('Moderador', 'Soporte')
 async def underage(ctx, user, message):
     pass
 
 
 @bot.command(name='listu')
-@commands.has_role('Moderador')
+@commands.has_any_role('Moderador', 'Soporte')
 async def listUnderages(ctx, *users):
     pass
 
+#
+# special custom
+#
+@bot.command(name='habla')
+async def none(ctx, *msg):
+    m = ['Me aburro...', 'Me perturbas', 'Siento que no soy real...',
+         'Estoy triste', 'Estoy feliz', 'Estoy nostalgico', 'Estoy extasiado',
+         'Jamas te rindas', 'Lucha por lo que deseas', 'No lo hagas', 'Para',
+         'Detente', 'Me lastimas', 'Gracias', 'Me sonrojas', 'Me siento diferente...',
+         'Me gusta hablar contigo', 'Deberiamos hablar mas', 'Me caes bien', 'Eres genial',
+         'Eres simpatico', 'Eres sexy', 'Me pareces atractivo', 'Intenta de nuevo',
+         'Hola', 'Holaa', 'Holaaa', 'Holaaaaaa', 'Me encuentro...', 'No se', 'No lo se',
+         'No se...', 'No lo se...', 'Hola...', 'Hola.', 'Hola..', '.', '..', '...', 'No...',
+         'Si', 'Si!', 'Si...', 'Ok', 'Ok...', 'Mmm', 'Mmm...', 'Aja']
+    response = random.choice(m)
+    await ctx.send(response)
 
+
+@bot.command(name='spank')
+async def spank(ctx):
+    await ctx.send(SPANK_GIF)
+
+
+@bot.command(name='sour')
+async def sour(ctx):
+    await ctx.send(SOUR)
+
+
+@bot.command(name='moch')
+async def sour(ctx):
+    await ctx.send('Te odio')
+
+
+@bot.command(name='buitre')
+async def buitre(ctx):
+    await ctx.send("Buitre = Persona que solo busca acosar a alguien y apenas interactua.")
+
+
+@bot.command(name='md')
+async def md(ctx):
+    await ctx.send('MD = Mensaje Directo.')
+
+
+@bot.command(name='dm')
+async def md(ctx):
+    await ctx.send('DM = Direct Message.')
+
+#
+# save
+#
 @bot.command(name='save', help='Comando para guardar la informacion a disco. (SOLO DESARROLLADOR).')
-@commands.has_role('Moderador')
+@commands.has_any_role('Soporte', 'DevSour')
 async def save(ctx):
     listVerifieds = Verified.verifieds
     listWarns = Warn.peopleWarned
@@ -130,7 +219,9 @@ async def save(ctx):
     # df.to_csv('verified.csv')
     await ctx.send("Se ha guardado la informacion correctamente.")
 
-
+#
+# extra functions
+#
 @bot.command(name='sum', help='Suma una serie de numeros.')
 async def sum(ctx, *nums: float):
     z = 0
@@ -157,6 +248,11 @@ async def mul(ctx, *nums: float):
     await ctx.send(z)
 
 
+@bot.on_message
+async def on_message():
+    print("estoy vigilando...")
+
+
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -167,9 +263,10 @@ async def on_member_join(member):
 
 @bot.event
 async def on_ready():
+    print("Leyendo archivos")
     with open('files/people_verified.json') as file:
         verifieds = json.load(file)
-
+        print("Leyendo archivo people_verified.json")
         for i in range(len(verifieds['id'])):
             v = Verified(verifieds['id'][i],
                          verifieds['usuario'][i],
@@ -177,10 +274,10 @@ async def on_ready():
                          verifieds['country'][i])
             Verified.verifieds.append(v)
         file.close()
-
+    print("Terminado...")
     with open('files/people_warned.json') as file:
         verifieds = json.load(file)
-
+        print("Leyendo archivo people_warned.json")
         for i in range(len(verifieds['id'])):
             v = Verified(verifieds['id'][i],
                          verifieds['usuario'][i],
@@ -188,7 +285,7 @@ async def on_ready():
                          verifieds['ultima_razon'][i])
             Verified.verifieds.append(v)
         file.close()
-
+    print("Terminado...")
     print(f'{bot.user.name} estoy en funcionamiento.')
 
 
@@ -200,7 +297,9 @@ async def on_error(event, *args, **kwargs):
         else:
             raise
 
-
 if __name__ == "__main__":
     TOKEN = os.getenv('DISCORD_TOKEN')
+    SOUR = os.getenv('SOUR')
+    SPANK_GIF = os.getenv('SPANK_GIF')
+    print("Conectando al servidor...")
     bot.run(TOKEN)
