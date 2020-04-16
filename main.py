@@ -5,6 +5,7 @@ import json
 
 from Verified import *
 from Warn import *
+from Underage import *
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -129,16 +130,32 @@ async def listWarns(ctx):
                        f'Ultimo motivo: {w.message}```')
 
 
-@bot.command(name='underage')
+@bot.command(name='underage', help='Agrega a un usuario a la lista de menores de edad.')
 @commands.has_any_role('Moderador', 'Soporte')
-async def underage(ctx, user, message):
-    pass
+async def underage(ctx, user: discord.User, evidence="Menor de edad."):
+    for u in Underage.underages:
+        if u.id == user.id:
+            await ctx.send("Ya esta en la lista de menores de edad.")
+            return
+
+    u = Underage(user.id, user.name, evidence)
+    Underage.underages.append(u)
+    await ctx.send(f'Ha sido agregado {user.mention} a la lista de menores de edad.')
 
 
-@bot.command(name='listu')
+@bot.command(name='listu', help='Muestra la lista de todos los menores de edad registrados.')
 @commands.has_any_role('Moderador', 'Soporte')
-async def listUnderages(ctx, *users):
-    pass
+async def listUnderages(ctx):
+    for u in Underage.underages:
+        await ctx.send('```' +
+                       f'ID: {u.id}\n' +
+                       f'Usuario: {u.user}\n' +
+                       f'Evidencia: {u.evidence}\n' +
+                       '```')
+
+#
+# shortcuts
+#
 
 #
 # special custom
@@ -200,6 +217,7 @@ async def info(ctx):
 async def save(ctx):
     listVerifieds = Verified.verifieds
     listWarns = Warn.peopleWarned
+    listUnderages = Underage.underages
 
     a = {'id': [i.id for i in listVerifieds],
          'usuario': [i.user for i in listVerifieds],
@@ -209,6 +227,9 @@ async def save(ctx):
     f.write(str(a).replace("'", '"'))
     f.close()
 
+    del a
+    del listVerifieds
+
     b = {'id': [i.id for i in listWarns],
          'usuario': [i.user for i in listWarns],
          'avisos': [i.warns for i in listWarns],
@@ -217,6 +238,18 @@ async def save(ctx):
     f.write(str(b).replace("'", '"'))
     f.close()
 
+    del b
+    del listWarns
+
+    c = {'id': [i.id for i in listUnderages],
+         'usuario': [i.user for i in listUnderages],
+         'evidencia': [i.evidence for i in listUnderages]}
+    f = open('files/people_underage.json', 'w')
+    f.write(str(c).replace("'", '"'))
+    f.close()
+
+    del c
+    del listUnderages
     await ctx.send("Se ha guardado la informacion correctamente.")
 
 #
@@ -247,7 +280,9 @@ async def mul(ctx, *nums: float):
         z = z * n
     await ctx.send(z)
 
-
+#
+# discord functions
+#
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -270,6 +305,7 @@ async def on_ready():
             Verified.verifieds.append(a)
         file.close()
     print("Terminado...")
+
     with open('files/people_warned.json') as file:
         warned = json.load(file)
         print("Leyendo archivo people_warned.json")
@@ -281,6 +317,18 @@ async def on_ready():
             Warn.peopleWarned.append(b)
         file.close()
     print("Terminado...")
+
+    with open('files/people_underage.json') as file:
+        underage = json.load(file)
+        print("Leyendo archivo people_underage.json")
+        for i in range(len(underage['id'])):
+            c = Underage(underage['id'][i],
+                         underage['usuario'][i],
+                         underage['evidencia'][i])
+            Underage.underages.append(c)
+        file.close()
+    print("Terminado...")
+
     print(f'{bot.user.name} estoy en funcionamiento.')
 
 
