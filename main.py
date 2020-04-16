@@ -289,6 +289,7 @@ async def on_member_join(member):
     await member.dm_channel.send(
         f'Bienvenido {member.name}, espero este servidor sea para ti!'
     )
+    print("New member!")
 
 
 @bot.event
@@ -334,7 +335,7 @@ async def on_ready():
 
 @bot.event
 async def on_error(event, *args, **kwargs):
-    with open('err.log', 'a') as f:
+    with open('files/err.log', 'a') as f:
         if event == 'on_message':
             f.write(f'Unhandled message: {args[0]}\n')
         else:
