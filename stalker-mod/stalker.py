@@ -29,16 +29,7 @@ async def on_message(message: discord.Message):
 
 @client.event
 async def on_ready():
-    with open('stalker.json', encoding="utf-8") as file:
-        persons = json.load(file)
-        for i in range(len(persons['id'])):
-            a = Person(persons['id'][i],
-                       persons['user'][i],
-                       persons['message'][i],
-                       persons['messages'][i])
-            Person.persons.append(a)
-        file.close()
-    print("Listo para la accion!")
+    readFile()
 
 
 def stalk(message: discord.Message):
@@ -53,11 +44,30 @@ def addInformationUser(message: discord.Message):
             x = p.messages + 1
             p.setMessages(x)
             p.setMessage(f'{t}: {message.content}')
+            del t
+            del x
             return
     t = time.strftime("%H:%M:%S")
     p = Person(message.author.id, message.author.name,
                [f'{t}: {message.content}'], 1)
     Person.persons.append(p)
+    del t
+    del p
+
+
+def readFile():
+    with open('stalker.json', encoding="utf-8") as file:
+        persons = json.load(file)
+        for i in range(len(persons['id'])):
+            a = Person(persons['id'][i],
+                       persons['user'][i],
+                       persons['message'][i],
+                       persons['messages'][i])
+            Person.persons.append(a)
+            del a
+        del persons
+        file.close()
+    print("Listo para la accion!")
 
 
 def saveToFile():
@@ -70,6 +80,9 @@ def saveToFile():
     f = open('stalker.json', 'w', encoding="utf-8")
     f.write(str(a).replace("'", '"'))
     f.close()
+    del a
+    del f
+    del listPerson
 
 
 if __name__ == "__main__":
