@@ -15,10 +15,6 @@ load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
 
 #
-# server
-#
-
-#
 # admin functions
 #
 @bot.command(name='kick', help='Expulsa a uno o mas usuarios del servidor')
@@ -41,9 +37,31 @@ async def ban(ctx, *users: discord.User):
     for u in users:
         await ctx.guild.unban(u)
 
+
+@bot.command(name='roleid', help='Obten ID y nombre de un rol en un server.')
+async def rolid(ctx, role: discord.Role):
+    await ctx.send(f'id: {role.id}, name: {role.name}')
+
+
 #
 # custom functions
 #
+@bot.command(name='jail', help='Encarcela a un usuario.')
+@commands.has_any_role('Moderador', 'Soporte')
+async def jail(ctx, *users: discord.Member):
+    for u in users:
+        newRoles = u.roles
+        rol = ctx.guild.get_role(701492794618937434)
+        for r in newRoles:
+            if r.id == rol.id:
+                newRoles.remove(ctx.guild.get_role(701492794618937434))
+                break
+
+        await u.edit(roles=newRoles)
+        await u.add_roles(ctx.guild.get_role(701337981751132172))
+        await ctx.send(f'{u.mention} encarcelado.')
+
+
 @bot.command(name='verify', help='Verifica a un usuario. (SOLO VERIFICADOR).')
 @commands.has_any_role('Verificador')
 async def verify(ctx, user: discord.User, gender, country):
@@ -153,9 +171,6 @@ async def listUnderages(ctx):
                        f'Evidencia: {u.evidence}\n' +
                        '```')
 
-#
-# shortcuts
-#
 
 #
 # special custom
