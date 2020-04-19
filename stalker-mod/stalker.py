@@ -17,24 +17,24 @@ client = discord.Client()
 async def on_message(message: discord.Message):
     if message.author == client.user:
         return
-    # if message.content.lower() == 'hola':
-    #    saludo = ['hola', 'aloh', 'aloha', 'Hola', 'HOla', 'HOLa', 'HOLA', 'holA',
-    #              'hoLA', 'hOLA', 'hello', 'hi', 'Hello', 'Hallo', 'marhabaan',
-    #              'barev', 'geia', 'sannu', 'aloha', 'namaste', 'nyob zoo', 'saluton',
-    #              'merhaba', 'salam', 'pryvit', 'Ola', 'Salut', 'hei', 'kaixo', 'tere',
-    #              'zdravo', 'ahoj']
-    #    await message.channel.send('**' + random.choice(saludo) + '**')
-    # stalk(message)
-    print(message.content)
-    if message.author.id == 504791007171444746:
-        print(message.content)
-        await message.delete()
+    if message.content.lower() == 'hola':
+        sayHi(message)
+    stalk(message)
 
 
 @client.event
 async def on_ready():
-    # readFile()
+    readFile()
     pass
+
+
+async def sayHi(message: discord.Message):
+    saludo = ['hola', 'aloh', 'aloha', 'Hola', 'HOla', 'HOLa', 'HOLA', 'holA',
+              'hoLA', 'hOLA', 'hello', 'hi', 'Hello', 'Hallo', 'marhabaan',
+              'barev', 'geia', 'sannu', 'aloha', 'namaste', 'nyob zoo', 'saluton',
+              'merhaba', 'salam', 'pryvit', 'Ola', 'Salut', 'hei', 'kaixo', 'tere',
+              'zdravo', 'ahoj']
+    await message.channel.send('**' + random.choice(saludo) + '**')
 
 
 def stalk(message: discord.Message):
