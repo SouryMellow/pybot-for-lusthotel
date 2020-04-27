@@ -24,6 +24,11 @@ async def ban(ctx, *users: discord.User):
         await ctx.guild.kick(u)
 
 
+# @bot.command(name='mute')
+# @commands.has_any_role('Moderador')
+# async def mute(ctx, user):
+
+
 @bot.command(name='ban', help='Banea a uno o mas usuarios del servidor')
 @commands.has_any_role('Moderador', 'Soporte')
 async def ban(ctx, *users: discord.User):
@@ -49,17 +54,46 @@ async def rolid(ctx, role: discord.Role):
 @bot.command(name='jail', help='Encarcela a un usuario.')
 @commands.has_any_role('Moderador', 'Soporte')
 async def jail(ctx, *users: discord.Member):
+    sour_id = 624819577427197994
+    role_sotano = 701492794618937434
+    role_casino = 701360305078272068
+    role_carcel = 701337981751132172
+
     for u in users:
+        if u.id == sour_id:
+            break
         newRoles = u.roles
-        rol = ctx.guild.get_role(701492794618937434)
+        rol_sot = ctx.guild.get_role(role_sotano)
+        rol_cas = ctx.guild.get_role(role_casino)
         for r in newRoles:
-            if r.id == rol.id:
-                newRoles.remove(ctx.guild.get_role(701492794618937434))
+            if r.id == rol_sot.id:
+                newRoles.remove(ctx.guild.get_role(role_sotano))
+                newRoles.remove(ctx.guild.get_role(role_casino))
                 break
 
         await u.edit(roles=newRoles)
-        await u.add_roles(ctx.guild.get_role(701337981751132172))
+        await u.add_roles(ctx.guild.get_role(role_carcel))
         await ctx.send(f'{u.mention} encarcelado.')
+
+
+@bot.command(name='free', help='Libera a un usuario de la carcel.')
+@commands.has_any_role('Moderador', 'Soporte')
+async def free(ctx, *users: discord.Member):
+    role_sotano = 701492794618937434
+    role_casino = 701360305078272068
+    role_carcel = 701337981751132172
+
+    for u in users:
+        newRoles = u.roles
+        rol_c = ctx.guild.get_role(role_carcel)
+        for r in newRoles:
+            if r.id == rol_c.id:
+                newRoles.remove(ctx.guild.get_role(role_carcel))
+
+        await u.edit(roles=newRoles)
+        await u.add_roles(ctx.guild.get_role(role_sotano))
+        await u.add_roles(ctx.guild.get_role(role_casino))
+        await ctx.send(f'{u.mention} liberado.')
 
 
 @bot.command(name='verify', help='Verifica a un usuario. (SOLO VERIFICADOR).')
@@ -357,8 +391,17 @@ async def on_error(event, *args, **kwargs):
             raise
 
 if __name__ == "__main__":
+
     TOKEN = os.getenv('DISCORD_TOKEN')
     SOUR = os.getenv('SOUR')
     SPANK_GIF = os.getenv('SPANK_GIF')
+
     print("Conectando al servidor...")
     bot.run(TOKEN)
+
+
+def getTokens():
+    SOUR_ID = 624819577427197994
+    ROLE_SOTANO = 701492794618937434
+    ROLE_CASINO = 701360305078272068
+    ROLE_CARCEL = 701337981751132172

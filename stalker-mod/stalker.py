@@ -17,6 +17,14 @@ client = discord.Client()
 async def on_message(message: discord.Message):
     if message.author == client.user:
         return
+
+    if message.content.lower() == '!lhs':
+        saveToFile()
+
+    # if message.author.id == 504791007171444746:
+    #    print(message.content)
+    #    await message.delete()
+
     if message.content.lower() == 'hola':
         sayHi(message)
     stalk(message)
@@ -39,7 +47,7 @@ async def sayHi(message: discord.Message):
 
 def stalk(message: discord.Message):
     addInformationUser(message)
-    saveToFile()
+    # saveToFile()
 
 
 def addInformationUser(message: discord.Message):
