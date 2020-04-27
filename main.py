@@ -51,48 +51,47 @@ async def rolid(ctx, role: discord.Role):
 #
 # custom functions
 #
+@bot.command(name='welcome', help='Da una calida bienvenida a un usuario.')
+async def welcome(ctx, *users: discord.Member):
+    for u in users:
+        await ctx.send(f'Bienvenido{u.mention}, no olvides pasar por' +
+                       f'{ctx.guild.get_channel(CHANNEL_ROLES_ID)}'+
+                       f' y {ctx.guild.get_channel(CHANNEL_COLORES_ID)}')
+
+
 @bot.command(name='jail', help='Encarcela a un usuario.')
 @commands.has_any_role('Moderador', 'Soporte')
 async def jail(ctx, *users: discord.Member):
-    sour_id = 624819577427197994
-    role_sotano = 701492794618937434
-    role_casino = 701360305078272068
-    role_carcel = 701337981751132172
-
     for u in users:
-        if u.id == sour_id:
+        if u.id == int(SOUR_ID):
             break
         newRoles = u.roles
-        rol_sot = ctx.guild.get_role(role_sotano)
-        rol_cas = ctx.guild.get_role(role_casino)
+        rol_sot = ctx.guild.get_role(int(ROLE_SOTANO_ID))
+        rol_cas = ctx.guild.get_role(int(ROLE_CASINO_ID))
         for r in newRoles:
             if r.id == rol_sot.id:
-                newRoles.remove(ctx.guild.get_role(role_sotano))
-                newRoles.remove(ctx.guild.get_role(role_casino))
+                newRoles.remove(ctx.guild.get_role(int(ROLE_SOTANO_ID)))
+                newRoles.remove(ctx.guild.get_role(int(ROLE_CASINO_ID)))
                 break
 
         await u.edit(roles=newRoles)
-        await u.add_roles(ctx.guild.get_role(role_carcel))
+        await u.add_roles(ctx.guild.get_role(int(ROLE_CARCEL_ID)))
         await ctx.send(f'{u.mention} encarcelado.')
 
 
 @bot.command(name='free', help='Libera a un usuario de la carcel.')
 @commands.has_any_role('Moderador', 'Soporte')
 async def free(ctx, *users: discord.Member):
-    role_sotano = 701492794618937434
-    role_casino = 701360305078272068
-    role_carcel = 701337981751132172
-
     for u in users:
         newRoles = u.roles
-        rol_c = ctx.guild.get_role(role_carcel)
+        rol_c = ctx.guild.get_role(int(ROLE_CARCEL_ID))
         for r in newRoles:
             if r.id == rol_c.id:
-                newRoles.remove(ctx.guild.get_role(role_carcel))
+                newRoles.remove(ctx.guild.get_role(int(ROLE_CARCEL_ID)))
 
         await u.edit(roles=newRoles)
-        await u.add_roles(ctx.guild.get_role(role_sotano))
-        await u.add_roles(ctx.guild.get_role(role_casino))
+        await u.add_roles(ctx.guild.get_role(int(ROLE_SOTANO_ID)))
+        await u.add_roles(ctx.guild.get_role(int(ROLE_CASINO_ID)))
         await ctx.send(f'{u.mention} liberado.')
 
 
@@ -391,17 +390,16 @@ async def on_error(event, *args, **kwargs):
             raise
 
 if __name__ == "__main__":
+    ROLE_CARCEL_ID = os.getenv('ROLE_CARCEL')
+    ROLE_SOTANO_ID = os.getenv('ROLE_SOTANO')
+    ROLE_CASINO_ID = os.getenv('ROLE_CASINO')
+    CHANNEL_ROLES_ID = os.getenv('CHANNEL_ROLES_ID')
+    CHANNEL_COLORES_ID = os.getenv('CHANNEL_COLORES_ID')
 
-    TOKEN = os.getenv('DISCORD_TOKEN')
+    SOUR_ID = os.getenv('SOUR_ID')
     SOUR = os.getenv('SOUR')
     SPANK_GIF = os.getenv('SPANK_GIF')
 
     print("Conectando al servidor...")
+    TOKEN = os.getenv('DISCORD_TOKEN')
     bot.run(TOKEN)
-
-
-def getTokens():
-    SOUR_ID = 624819577427197994
-    ROLE_SOTANO = 701492794618937434
-    ROLE_CASINO = 701360305078272068
-    ROLE_CARCEL = 701337981751132172
