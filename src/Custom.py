@@ -6,12 +6,15 @@ from discord.ext import commands
 from Verified import *
 from Warn import *
 from Underage import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 bot = commands.Bot(command_prefix='!lh ')
 
-ROLE_CARCEL_ID = os.getenv('ROLE_CARCEL')
-ROLE_SOTANO_ID = os.getenv('ROLE_SOTANO')
-ROLE_CASINO_ID = os.getenv('ROLE_CASINO')
+ROLE_CARCEL_ID = os.getenv('ROLE_CARCEL_ID')
+ROLE_SOTANO_ID = os.getenv('ROLE_SOTANO_ID')
+ROLE_CASINO_ID = os.getenv('ROLE_CASINO_ID')
 CHANNEL_ROLES_ID = os.getenv('CHANNEL_ROLES_ID')
 CHANNEL_COLORES_ID = os.getenv('CHANNEL_COLORES_ID')
 
@@ -20,19 +23,10 @@ class Custom(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @bot.command(name='welcome', help='Da una calida bienvenida a un usuario')
-    async def welcome(self, ctx, *users: discord.Member):
-        for u in users:
-            await ctx.send(f'Bienvenido{u.mention}, no olvides pasar por' +
-                           f'{ctx.guild.get_channel(CHANNEL_ROLES_ID)}' +
-                           f' y {ctx.guild.get_channel(CHANNEL_COLORES_ID)}')
-
     @bot.command(name='jail', help='Encarcela a un usuario')
     @commands.has_any_role('Moderador', 'Soporte')
     async def jail(self, ctx, *users: discord.Member):
         for u in users:
-            if u.id == int(SOUR_ID):
-                break
             newRoles = u.roles
             rol_sot = ctx.guild.get_role(int(ROLE_SOTANO_ID))
             rol_cas = ctx.guild.get_role(int(ROLE_CASINO_ID))
@@ -60,6 +54,13 @@ class Custom(commands.Cog):
             await u.add_roles(ctx.guild.get_role(int(ROLE_SOTANO_ID)))
             await u.add_roles(ctx.guild.get_role(int(ROLE_CASINO_ID)))
             await ctx.send(f'{u.mention} liberado.')
+
+#    @bot.command(name='welcome', help='Da una calida bienvenida a un usuario')
+#    async def welcome(self, ctx, *users: discord.Member):
+#        for u in users:
+#            await ctx.send(f'Bienvenido{u.mention}, no olvides pasar por' +
+#                           f'{ctx.guild.get_channel(CHANNEL_ROLES_ID)}' +
+#                           f' y {ctx.guild.get_channel(CHANNEL_COLORES_ID)}')
 
     @bot.command(name='verify', help='Verifica a un usuario')
     @commands.has_any_role('Verificador')
