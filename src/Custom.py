@@ -12,6 +12,7 @@ load_dotenv()
 
 bot = commands.Bot(command_prefix='!lh ')
 
+ROLE_VERIFICADO_ID = os.getenv('ROLE_VERIFICADO_ID')
 ROLE_CARCEL_ID = os.getenv('ROLE_CARCEL_ID')
 ROLE_SOTANO_ID = os.getenv('ROLE_SOTANO_ID')
 ROLE_CASINO_ID = os.getenv('ROLE_CASINO_ID')
@@ -22,6 +23,13 @@ CHANNEL_COLORES_ID = os.getenv('CHANNEL_COLORES_ID')
 class Custom(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    async def sendMessage(self, member: discord.Member, message):
+        try:
+            await member.create_dm()
+            await member.dm_channel.send(message)
+        except:
+            pass
 
     @bot.command(name='jail', help='Encarcela a un usuario')
     @commands.has_any_role('Moderador', 'Soporte')
@@ -38,6 +46,7 @@ class Custom(commands.Cog):
 
             await u.edit(roles=newRoles)
             await u.add_roles(ctx.guild.get_role(int(ROLE_CARCEL_ID)))
+            await self.sendMessage(f'{u.mention} Has sido encarcelado.')
             await ctx.send(f'{u.mention} encarcelado.')
 
     @bot.command(name='free', help='Libera a un usuario de la carcel')
@@ -55,39 +64,48 @@ class Custom(commands.Cog):
             await u.add_roles(ctx.guild.get_role(int(ROLE_CASINO_ID)))
             await ctx.send(f'{u.mention} liberado.')
 
-#    @bot.command(name='welcome', help='Da una calida bienvenida a un usuario')
-#    async def welcome(self, ctx, *users: discord.Member):
-#        for u in users:
-#            await ctx.send(f'Bienvenido{u.mention}, no olvides pasar por' +
-#                           f'{ctx.guild.get_channel(CHANNEL_ROLES_ID)}' +
-#                           f' y {ctx.guild.get_channel(CHANNEL_COLORES_ID)}')
+    @bot.command(name='md', help='Envia un mensaje a usuarios.')
+    @commands.has_any_role('Moderador', 'Soporte')
+    async def md(self, ctx, message):
+        members = ctx.guild.members
+        await ctx.send(f'Estimado de 1 segundo por usuario. {len(members)} segundos.')
+        for m in members:
+            print(m)
+            await self.sendMessage(m, message)
+
+        await ctx.send('Enviado.')
 
     @bot.command(name='verify', help='Verifica a un usuario')
     @commands.has_any_role('Verificador')
-    async def verify(self, ctx, user: discord.User, gender, country):
+    async def verify(self, ctx, member: discord.Member, gender, country):
         for v in Verified.verifieds:
-            if v.id == user.id:
-                await ctx.send(f'```{user.name} ya esta verificado.```')
+            if v.id == member.id:
+                await ctx.send(f'```{member.name} ya esta verificado.```')
                 return
 
-        p = Verified(user.id, user.name, gender, country)
+        p = Verified(member.id, member.name, gender, country)
         Verified.verifieds.append(p)
-
-        await ctx.send(f'```{p.user} verificado correctamente.```')
+        await member.add_roles(ctx.guild.get_role(int(ROLE_VERIFICADO_ID)))
+        await self.sendMessage(f'{p.mention} Has sido verificado correctamente.')
+        await ctx.send(f'```{p.name} verificado correctamente.```')
 
     @bot.command(name='warn', help='Pon una advertencia a una persona')
     @commands.has_any_role('Moderador', 'Soporte')
-    async def warn(self, ctx, user: discord.User, message="mal comportamiento"):
+    async def warn(self, ctx, member: discord.Member, message="mal comportamiento"):
         for w in Warn.peopleWarned:
-            if w.id == user.id:
+            if w.id == member.id:
                 x = w.warns + 1
                 w.setWarn(x)
-                await ctx.send(f'Has recibido {w.warns} advertencias {user.mention} por {message}.')
+                await self.sendMessage(member,
+                                       f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
+                await ctx.send(f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
                 return
 
-        w = Warn(user.id, user.name, 1, message)
+        w = Warn(member.id, member.name, 1, message)
         Warn.peopleWarned.append(w)
-        await ctx.send(f'Has recibido una advertencia {user.mention} por {message}.')
+        await self.sendMessage(
+            f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
+        await ctx.send(f'Has recibido una advertencia {member.mention} por {message}.')
 
     @bot.command(name='request', help='Despliega la informacion de una o varias personas')
     @commands.has_any_role('Moderador', 'Soporte')
@@ -164,8 +182,8 @@ class Custom(commands.Cog):
                            f'Evidencia: {u.evidence}\n' +
                            '```')
 
-    @bot.command(name='habla', help='En desarrollo')
-    async def none(self, ctx, *msg):
+    @bot.command(name='talk', help='En desarrollo...')
+    async def talk(self, ctx, *msg):
         m = ['Me aburro...', 'Me perturbas', 'Siento que no soy real...',
              'Estoy triste', 'Estoy feliz', 'Estoy nostalgico', 'Estoy extasiado',
              'Jamas te rindas', 'Lucha por lo que deseas', 'No lo hagas', 'Para',

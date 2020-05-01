@@ -67,19 +67,19 @@ async def on_ready():
     print(f'{bot.user.name} estoy en funcionamiento.')
 
 
-@bot.event
-async def on_error(event, *args, **kwargs):
-    with open('err.log', 'a') as f:
-        if event == 'on_message':
-            f.write(f'Unhandled message: {args[0]}\n')
-        else:
-            raise
+# @bot.event
+# async def on_error(event, *args, **kwargs):
+#    with open('files/err.log', 'a') as f:
+#        if event == 'on_message':
+#            f.write(f'Unhandled message: {args[0]}\n')
+#        else:
+#            raise
 
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send(f'hola xd')
+# @bot.event
+# async def on_command_error(ctx, error):
+#    if isinstance(error, commands.errors.CheckFailure):
+#        await ctx.send(f'Error en el comando o falta de permisos.')
 
 if __name__ == "__main__":
     bot.add_cog(Admin(bot))
@@ -90,3 +90,11 @@ if __name__ == "__main__":
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')
     bot.run(TOKEN)
+
+# client.user.setPresence({
+#    activity: {
+#        name: `-help | crater...`,
+#       type: "PLAYING"
+#   },
+#    status: "online"
+# })
