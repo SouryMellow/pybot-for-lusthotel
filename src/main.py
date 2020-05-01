@@ -14,8 +14,11 @@ from Verified import *
 from Warn import *
 from Underage import *
 
+from flask import Flask
+
 load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
+app = Flask(__name__)
 
 
 @bot.event
@@ -81,7 +84,9 @@ async def on_ready():
 #    if isinstance(error, commands.errors.CheckFailure):
 #        await ctx.send(f'Error en el comando o falta de permisos.')
 
-if __name__ == "__main__":
+@app.route('/')
+def start():
+    """Return a friendly HTTP greeting."""
     bot.add_cog(Admin(bot))
     bot.add_cog(Custom(bot))
     bot.add_cog(Extra(bot))
@@ -90,6 +95,10 @@ if __name__ == "__main__":
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')
     bot.run(TOKEN)
+
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=8080, debug=True)
 
 # client.user.setPresence({
 #    activity: {
