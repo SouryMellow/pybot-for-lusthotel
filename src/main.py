@@ -14,11 +14,8 @@ from Verified import *
 from Warn import *
 from Underage import *
 
-from flask import Flask
-
 load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
-app = Flask(__name__)
 
 
 @bot.event
@@ -70,23 +67,21 @@ async def on_ready():
     print(f'{bot.user.name} estoy en funcionamiento.')
 
 
-# @bot.event
-# async def on_error(event, *args, **kwargs):
-#    with open('files/err.log', 'a') as f:
-#        if event == 'on_message':
-#            f.write(f'Unhandled message: {args[0]}\n')
-#        else:
-#            raise
+@bot.event
+async def on_error(event, *args, **kwargs):
+    with open('files/err.log', 'a') as f:
+        if event == 'on_message':
+            f.write(f'Unhandled message: {args[0]}\n')
+        else:
+            raise
 
 
-# @bot.event
-# async def on_command_error(ctx, error):
-#    if isinstance(error, commands.errors.CheckFailure):
-#        await ctx.send(f'Error en el comando o falta de permisos.')
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send(f'Error en el comando o falta de permisos.')
 
-@app.route('/')
-def start():
-    """Return a friendly HTTP greeting."""
+if __name__ == "__main__":
     bot.add_cog(Admin(bot))
     bot.add_cog(Custom(bot))
     bot.add_cog(Extra(bot))
@@ -95,10 +90,6 @@ def start():
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')
     bot.run(TOKEN)
-
-
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8080, debug=True)
 
 # client.user.setPresence({
 #    activity: {
