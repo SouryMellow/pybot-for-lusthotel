@@ -20,10 +20,13 @@ bot = commands.Bot(command_prefix='!lh ')
 
 @bot.event
 async def on_member_join(member):
-    await member.create_dm()
-    await member.dm_channel.send(
-        f'Bienvenido {member.name}, espero este servidor sea para ti!')
-    print("New member!")
+    try:
+        await member.create_dm()
+        await member.dm_channel.send(
+            f'Bienvenido {member.name}, espero este servidor sea para ti!')
+        print("New member!")
+    except:
+        pass
 
 
 @bot.event

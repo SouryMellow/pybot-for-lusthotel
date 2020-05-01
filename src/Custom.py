@@ -46,7 +46,6 @@ class Custom(commands.Cog):
 
             await u.edit(roles=newRoles)
             await u.add_roles(ctx.guild.get_role(int(ROLE_CARCEL_ID)))
-            await self.sendMessage(f'{u.mention} Has sido encarcelado.')
             await ctx.send(f'{u.mention} encarcelado.')
 
     @bot.command(name='free', help='Libera a un usuario de la carcel')
@@ -86,7 +85,6 @@ class Custom(commands.Cog):
         p = Verified(member.id, member.name, gender, country)
         Verified.verifieds.append(p)
         await member.add_roles(ctx.guild.get_role(int(ROLE_VERIFICADO_ID)))
-        await self.sendMessage(f'{p.mention} Has sido verificado correctamente.')
         await ctx.send(f'```{p.name} verificado correctamente.```')
 
     @bot.command(name='warn', help='Pon una advertencia a una persona')
@@ -96,15 +94,11 @@ class Custom(commands.Cog):
             if w.id == member.id:
                 x = w.warns + 1
                 w.setWarn(x)
-                await self.sendMessage(member,
-                                       f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
                 await ctx.send(f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
                 return
 
         w = Warn(member.id, member.name, 1, message)
         Warn.peopleWarned.append(w)
-        await self.sendMessage(
-            f'Has recibido {w.warns} advertencias {member.mention} por {message}.')
         await ctx.send(f'Has recibido una advertencia {member.mention} por {message}.')
 
     @bot.command(name='request', help='Despliega la informacion de una o varias personas')
