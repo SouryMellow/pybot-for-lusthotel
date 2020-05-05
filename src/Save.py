@@ -13,7 +13,7 @@ class Save(commands.Cog):
         self.bot = bot
 
     @bot.command(name='save', help='Comando para guardar la informacion a disco')
-    @commands.has_any_role('Soporte', 'DevSour')
+    @commands.has_any_role('Soporte', 'DevSour', 'Concierge del Hotel')
     async def save(self, ctx):
         listVerifieds = Verified.verifieds
         listWarns = Warn.peopleWarned

@@ -1,1 +1,18 @@
-{"id": [624819577427197994, 646823465101295627], "usuario": ["sourmellow", "Lust Hotel Bot"], "avisos": [3, 1], "ultima_razon": ["mal comportamiento", "mal comportamiento"]}
+{
+    "id": [
+        624819577427197994,
+        646823465101295627
+    ],
+    "usuario": [
+        "sourmellow",
+        "Lust Hotel Bot"
+    ],
+    "avisos": [
+        1,
+        1
+    ],
+    "ultima_razon": [
+        "mal comportamiento",
+        "mal comportamiento"
+    ]
+}

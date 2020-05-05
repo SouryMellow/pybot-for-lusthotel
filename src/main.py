@@ -93,11 +93,3 @@ if __name__ == "__main__":
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')
     bot.run(TOKEN)
-
-# client.user.setPresence({
-#    activity: {
-#        name: `-help | crater...`,
-#       type: "PLAYING"
-#   },
-#    status: "online"
-# })

@@ -32,7 +32,7 @@ class Custom(commands.Cog):
             pass
 
     @bot.command(name='jail', help='Encarcela a un usuario')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def jail(self, ctx, *users: discord.Member):
         for u in users:
             newRoles = u.roles
@@ -49,7 +49,7 @@ class Custom(commands.Cog):
             await ctx.send(f'{u.mention} encarcelado.')
 
     @bot.command(name='free', help='Libera a un usuario de la carcel')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def free(self, ctx, *users: discord.Member):
         for u in users:
             newRoles = u.roles
@@ -64,7 +64,7 @@ class Custom(commands.Cog):
             await ctx.send(f'{u.mention} liberado.')
 
     @bot.command(name='md', help='Envia un mensaje a usuarios.')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def md(self, ctx, message):
         members = ctx.guild.members
         await ctx.send(f'Estimado de 1 segundo por usuario. {len(members)} segundos.')
@@ -75,7 +75,7 @@ class Custom(commands.Cog):
         await ctx.send('Enviado.')
 
     @bot.command(name='verify', help='Verifica a un usuario')
-    @commands.has_any_role('Verificador')
+    @commands.has_any_role('Verificador', 'Concierge del Hotel')
     async def verify(self, ctx, member: discord.Member, gender, country):
         for v in Verified.verifieds:
             if v.id == member.id:
@@ -88,7 +88,7 @@ class Custom(commands.Cog):
         await ctx.send(f'```{p.name} verificado correctamente.```')
 
     @bot.command(name='warn', help='Pon una advertencia a una persona')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def warn(self, ctx, member: discord.Member, message="mal comportamiento"):
         for w in Warn.peopleWarned:
             if w.id == member.id:
@@ -102,7 +102,7 @@ class Custom(commands.Cog):
         await ctx.send(f'Has recibido una advertencia {member.mention} por {message}.')
 
     @bot.command(name='request', help='Despliega la informacion de una o varias personas')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def request(self, ctx, *users: discord.Member):
         for user in users:
             r = [u.name for u in user.roles]
@@ -119,13 +119,13 @@ class Custom(commands.Cog):
                            '```')
 
     @bot.command(name='id', help='Obten la ID de una o varias personas')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def getid(self, ctx, *users: discord.User):
         for user in users:
             await ctx.send(f'```ID: {user.id}```')
 
     @bot.command(name='listv', help='Despliega la informacion de las personas verificadas')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def listVerify(self, ctx):
         for v in Verified.verifieds:
             await ctx.send(f'```ID: {v.id}\n' +
@@ -134,7 +134,7 @@ class Custom(commands.Cog):
                            f'Pais: {v.country}\n```')
 
     @bot.command(name='warns', help='Ver todas las advertencias de una o varias personas')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def warns(self, ctx, *users: discord.User):
         for u in users:
             for w in Warn.peopleWarned:
@@ -146,7 +146,7 @@ class Custom(commands.Cog):
                     pass
 
     @bot.command(name='listw', help='Ver todas las advertencias de todas las personas')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def listWarns(self, ctx):
         for w in Warn.peopleWarned:
             await ctx.send(f'```Usuario: {w.user}\n' +
@@ -154,7 +154,7 @@ class Custom(commands.Cog):
                            f'Ultimo motivo: {w.message}```')
 
     @bot.command(name='underage', help='Agrega a un usuario a la lista de menores de edad')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def underage(self, ctx, user: discord.User, evidence="Menor de edad."):
         for u in Underage.underages:
             if u.id == user.id:
@@ -167,7 +167,7 @@ class Custom(commands.Cog):
         await ctx.send(f'Ha sido agregado {user.mention} a la lista de menores de edad.')
 
     @bot.command(name='listu', help='Muestra la lista de todos los menores de edad registrados')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def listUnderages(self, ctx):
         for u in Underage.underages:
             await ctx.send('```' +

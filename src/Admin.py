@@ -10,7 +10,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @bot.command(name='unban', help='Desbanea a uno o mas usuarios del servidor')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def unban(self, ctx, *users: discord.User):
         for u in users:
             await ctx.guild.unban(u)
@@ -21,14 +21,14 @@ class Admin(commands.Cog):
         await ctx.send(f'id: {role.id}, name: {role.name}')
 
     @bot.command(name='kick', help='Expulsa a uno o mas usuarios del servidor')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def kick(self, ctx, *users: discord.User):
         for u in users:
             await ctx.guild.kick(u)
             await ctx.send(f'{u.mention} ha sido expulsado.')
 
     @bot.command(name='ban', help='Banea a uno o mas usuarios del servidor')
-    @commands.has_any_role('Moderador', 'Soporte')
+    @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def ban(self, ctx, *users: discord.User):
         for u in users:
             await ctx.guild.ban(u)
