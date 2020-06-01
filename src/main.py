@@ -13,6 +13,7 @@ from Save import *
 from Verified import *
 from Warn import *
 from Underage import *
+from Calendar import *
 
 load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
@@ -85,10 +86,11 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Error en el comando o falta de permisos.')
 
 if __name__ == "__main__":
-    bot.add_cog(Admin(bot))
-    bot.add_cog(Custom(bot))
-    bot.add_cog(Extra(bot))
-    bot.add_cog(Save(bot))
+    bot.add_cog(Admin())
+    bot.add_cog(Custom())
+    bot.add_cog(Extra())
+    bot.add_cog(Save())
+    bot.add_cog(Calendar())
 
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')

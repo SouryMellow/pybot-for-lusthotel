@@ -9,9 +9,6 @@ bot = commands.Bot(command_prefix='!lh ')
 
 
 class Save(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @bot.command(name='save', help='Comando para guardar la informacion a disco')
     @commands.has_any_role('Soporte', 'DevSour', 'Concierge del Hotel')
     async def save(self, ctx):

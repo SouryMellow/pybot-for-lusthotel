@@ -21,9 +21,6 @@ CHANNEL_COLORES_ID = os.getenv('CHANNEL_COLORES_ID')
 
 
 class Custom(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     async def sendMessage(self, member: discord.Member, message):
         try:
             await member.create_dm()

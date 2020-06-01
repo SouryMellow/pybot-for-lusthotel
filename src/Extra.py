@@ -5,9 +5,6 @@ bot = commands.Bot(command_prefix='!lh ')
 
 
 class Extra(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @bot.command(name='sum', help='Suma una serie de numeros')
     async def sum(self, ctx, *nums: float):
         z = 0

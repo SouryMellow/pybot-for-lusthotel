@@ -5,10 +5,6 @@ bot = commands.Bot(command_prefix='!lh ')
 
 
 class Admin(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
-
     @bot.command(name='unban', help='Desbanea a uno o mas usuarios del servidor')
     @commands.has_any_role('Moderador', 'Soporte', 'Concierge del Hotel')
     async def unban(self, ctx, *users: discord.User):
