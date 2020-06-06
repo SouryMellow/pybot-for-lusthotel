@@ -13,7 +13,6 @@ from Save import *
 from Verified import *
 from Warn import *
 from Underage import *
-from Calendar import *
 
 load_dotenv()
 bot = commands.Bot(command_prefix='!lh ')
@@ -32,6 +31,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_ready():
+
     print("Leyendo archivos")
     with open('files/people_verified.json') as file:
         verifieds = json.load(file)
@@ -90,7 +90,6 @@ if __name__ == "__main__":
     bot.add_cog(Custom())
     bot.add_cog(Extra())
     bot.add_cog(Save())
-    bot.add_cog(Calendar())
 
     print("Conectando al servidor...")
     TOKEN = os.getenv('DISCORD_TOKEN')
